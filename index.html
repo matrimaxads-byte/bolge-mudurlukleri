@@ -1,1 +1,393 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bölge Müdürlüklerimiz</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      /* Genel */
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#475569;
+      --line:rgba(15,23,42,.08);
+
+      /* Aksiyon renkleri */
+      --btn:#5066e1;
+      --btn2:#e9ecfb;
+      --ok:#16a34a;
+
+      /* UI */
+      --radius:16px;
+      --shadow:0 8px 24px rgba(15,23,42,.08);
+
+      font-family:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:0px 16px 40px;
+    }
+
+    h1{ font-size:28px; margin:0 0 6px; letter-spacing:-.02em; color:#000; }
+    .sub{ color:#000; margin:0; line-height:1.45; max-width:68ch; }
+
+    /* PANEL: üst sabit, liste scroll */
+    .panel{
+      margin-top:16px;
+      background:#f1f4f9;
+      border:1px solid rgba(15,23,42,.06);
+      border-radius:20px;
+      box-shadow:0 4px 12px rgba(15,23,42,.04);
+
+      display:flex;
+      flex-direction:column;
+
+      /* Mobilde daha doğru yükseklik */
+      height:calc(100dvh - 40px);
+    }
+
+    .controls{
+      flex:0 0 auto;
+      padding:16px;
+      display:grid;
+      grid-template-columns: 1fr 1fr 1.6fr;
+      gap:10px;
+      border-bottom:1px solid var(--line);
+      background:#f1f4f9;
+      border-top-left-radius:20px;
+      border-top-right-radius:20px;
+    }
+    @media (max-width: 900px){ .controls{ grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 520px){ .controls{ grid-template-columns: 1fr; } }
+
+    .field{ display:flex; flex-direction:column; gap:6px; }
+    label{ font-size:12px; color:var(--muted); }
+
+    select, input{
+      background:#ffffff;
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+    }
+    input::placeholder{ color:rgba(159,176,208,.75); }
+
+    select:focus, input:focus{
+      border-color:#5066e1;
+      box-shadow:0 0 0 3px rgba(80,102,225,.12);
+    }
+
+    .bar{
+      flex:0 0 auto;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding:12px 16px;
+      flex-wrap:wrap;
+      border-bottom:1px solid var(--line);
+      background:#f1f4f9;
+    }
+
+    .chip{
+      font-size:12px;
+      color:var(--muted);
+      border:1px solid var(--line);
+      padding:7px 10px;
+      border-radius:999px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      background:#fff;
+    }
+    .chip b{ color:var(--text); font-weight:600; }
+
+    .btn{
+      cursor:pointer;
+      border:1px solid transparent;
+      border-radius:12px;
+      padding:10px 12px;
+      background:var(--btn);
+      color:#fff;
+      font-weight:650;
+      letter-spacing:.01em;
+    }
+    .btn.secondary{
+      background:var(--btn2);
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+    .btn:hover{ filter:brightness(.97); }
+    .btn:active{ transform: translateY(1px); }
+
+    .grow{ flex:1; }
+
+    /* Liste alanı scroll */
+    .list{
+      flex:1 1 auto;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+      padding:16px;
+
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 900px){ .list{ grid-template-columns: 1fr; } }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      box-shadow:var(--shadow);
+    }
+
+    .top{ display:flex; gap:10px; align-items:flex-start; justify-content:space-between; }
+    .name{ font-size:15px; font-weight:750; margin:0; color:var(--text); }
+    .meta{ color:var(--muted); font-size:13px; margin:6px 0 0; line-height:1.35; }
+
+    .tags{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .tag{
+      font-size:12px;
+      color:var(--muted);
+      border:1px solid var(--line);
+      padding:5px 8px;
+      border-radius:999px;
+      background:#fff;
+    }
+
+    .actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+
+    .a{
+      text-decoration:none;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:9px 10px;
+      border-radius:12px;
+      border:1px solid rgba(80,102,225,.25);
+      background:#f1f3fe;
+      color:#5066e1;
+      font-weight:650;
+      font-size:13px;
+    }
+    .a.primary{
+      background:#5066e1;
+      color:#ffffff;
+      border-color:#5066e1;
+    }
+    .a.primary:hover{ background:#3f52c6; border-color:#3f52c6; }
+
+    .a.ok{
+      background:#ecfdf5;
+      color:#166534;
+      border-color:rgba(22,163,74,.25);
+    }
+
+    /* Boş durum - list içinde tam ortalı */
+    .empty{
+      grid-column: 1 / -1;
+      padding:26px 16px;
+      color:var(--muted);
+      text-align:center;
+      border:1px dashed var(--line);
+      border-radius:16px;
+      background:#fff;
+    }
+
+    /* Scrollbar (opsiyonel) */
+    .list::-webkit-scrollbar{ width:8px; }
+    .list::-webkit-scrollbar-thumb{
+      background:rgba(15,23,42,.18);
+      border-radius:10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <div class="controls">
+        <div class="field">
+          <label for="city">İl</label>
+          <select id="city"></select>
+        </div>
+        <div class="field">
+          <label for="district">İlçe</label>
+          <select id="district"></select>
+        </div>
+        <div class="field">
+          <label for="q">Ara (isim / adres / etiket)</label>
+          <input id="q" placeholder="Örn: Şaşmaz, İvedik, Ankara.." />
+        </div>
+      </div>
+
+      <div class="bar">
+        <button class="btn secondary" id="sortAZ" title="Mağaza ismine göre A→Z">A → Z</button>
+        <button class="btn secondary" id="sortZA" title="Mağaza ismine göre Z→A">Z → A</button>
+        <div class="chip"><span>Sonuç:</span> <b id="count">0</b></div>
+        <div class="grow"></div>
+        <button class="btn" id="reset">Filtreleri Sıfırla</button>
+      </div>
+
+      <div id="list" class="list"></div>
+    </div>
+  </div>
+
+  <script>
+    const DEALERS = [
+      {
+        name: "İbrahim Halil Gıda San. ve Tic A.Ş",
+        city: "Akdeniz",
+        district: "Mersin",
+        address: "İsmet İnönü Bulvarı No:143/15 Mezitli/MERSİN",
+        phone: "+90 312 394 70 77",
+        tags: ["Akdeniz Bölge Müdürlüğü"],
+        lat:,
+        lng:
+      },
+    ];
+
+    const $ = (id) => document.getElementById(id);
+
+    const norm = (s) => (s || "").toString().trim().toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    function unique(arr){ return [...new Set(arr)].sort((a,b)=>a.localeCompare(b,"tr")); }
+
+    const citySel = $("city"), districtSel = $("district"), qInp = $("q");
+    const listEl = $("list"), countEl = $("count");
+
+    function fillCities(){
+      const cities = unique(DEALERS.map(d=>d.city));
+      citySel.innerHTML = `<option value="">--Seçiniz--</option>` + cities.map(c=>`<option>${c}</option>`).join("");
+    }
+
+    function fillDistricts(){
+      const city = citySel.value;
+      const districts = unique(DEALERS.filter(d=>!city || d.city===city).map(d=>d.district));
+      districtSel.innerHTML = `<option value="">--Seçiniz--</option>` + districts.map(c=>`<option>${c}</option>`).join("");
+    }
+
+    function mapsLink(d){
+      if (typeof d.lat === "number" && typeof d.lng === "number") {
+        return `https://www.google.com/maps?q=${d.lat},${d.lng}`;
+      }
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.address)}`;
+    }
+
+    function phoneLink(phone){
+      const p = (phone||"").replace(/[^\d+]/g,"");
+      return p ? `tel:${p}` : "";
+    }
+
+    function escapeHtml(str){
+      return (str||"").toString()
+        .replaceAll("&","&amp;").replaceAll("<","&lt;")
+        .replaceAll(">","&gt;").replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    let currentSort = "AZ"; // AZ | ZA
+
+    function apply(){
+      const city = citySel.value;
+      const district = districtSel.value;
+      const q = norm(qInp.value);
+
+      let out = DEALERS.filter(d=>{
+        if (city && d.city !== city) return false;
+        if (district && d.district !== district) return false;
+
+        if (!q) return true;
+
+        const hay = norm([d.name, d.address, d.city, d.district, (d.tags||[]).join(" ")].join(" "));
+        return hay.includes(q);
+      });
+
+      out.sort((a,b)=>{
+        const cmp = a.name.localeCompare(b.name,"tr");
+        return currentSort==="AZ" ? cmp : -cmp;
+      });
+
+      render(out);
+    }
+
+    function render(items){
+      countEl.textContent = items.length;
+
+      if (!items.length){
+        listEl.innerHTML = `<div class="empty">Kriterlere uygun sonuç bulunamadı.</div>`;
+        return;
+      }
+
+      listEl.innerHTML = items.map(d=>{
+        const mapUrl = mapsLink(d);
+        const tel = phoneLink(d.phone);
+        const tags = (d.tags||[]).slice(0,6).map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join("");
+        const hasAppt = d.appointmentUrl && d.appointmentUrl !== "#";
+        const hasDetail = d.detailUrl && d.detailUrl !== "#";
+
+        return `
+          <div class="card">
+            <div class="top">
+              <div>
+                <p class="name">${escapeHtml(d.name)}</p>
+                <p class="meta">
+                  <b>${escapeHtml(d.city)}</b> · ${escapeHtml(d.district)}<br/>
+                  ${escapeHtml(d.address)}
+                </p>
+                ${tags ? `<div class="tags">${tags}</div>` : ``}
+              </div>
+            </div>
+
+            <div class="actions">
+              ${hasAppt ? `<a class="a primary" href="${d.appointmentUrl}" target="_blank" rel="noopener">Randevu Al</a>` : ``}
+              ${tel ? `<a class="a ok" href="${tel}">Ara</a>` : ``}
+              <a class="a" href="${mapUrl}" target="_blank" rel="noopener">Yol Tarifi</a>
+              ${hasDetail ? `<a class="a" href="${d.detailUrl}" target="_blank" rel="noopener">Detay</a>` : ``}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    citySel.addEventListener("change", ()=>{ fillDistricts(); apply(); });
+    districtSel.addEventListener("change", apply);
+    qInp.addEventListener("input", apply);
+
+    $("sortAZ").addEventListener("click", ()=>{ currentSort="AZ"; apply(); });
+    $("sortZA").addEventListener("click", ()=>{ currentSort="ZA"; apply(); });
+
+    $("reset").addEventListener("click", ()=>{
+      citySel.value = "";
+      fillDistricts();
+      districtSel.value = "";
+      qInp.value = "";
+      currentSort="AZ";
+      apply();
+    });
+
+    fillCities();
+    fillDistricts();
+    apply();
+  </script>
+</body>
+</html>
 
