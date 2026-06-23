@@ -386,5 +386,10 @@
     fillDistricts();
     apply();
   </script>
+  <script>
+function mxPost(){ parent.postMessage({mxHeight:document.documentElement.scrollHeight},'*'); }
+window.addEventListener('load',mxPost);
+new ResizeObserver(mxPost).observe(document.body);
+</script>
 </body>
 </html>
