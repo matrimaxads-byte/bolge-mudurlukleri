@@ -59,6 +59,7 @@
       background:var(--btn); color:#fff; font-family:"Nunito"; font-weight:800; font-size:14px;
     }
     .btn.secondary{ background:var(--btn2); color:#5009D9; border:1px solid #e0d9f7; }
+    .btn.secondary.active{ background:var(--btn); color:#fff; border-color:var(--btn); }
     .btn:hover{ filter:brightness(.97); }
     .btn:active{ transform:translateY(1px); }
     .grow{ flex:1; }
@@ -113,12 +114,12 @@
         </div>
         <div class="field">
           <label for="q">Ara (isim / adres / etiket)</label>
-          <input id="q" placeholder="Örn: Şaşmaz, İvedik, Ankara.." />
+          <input id="q" placeholder="Örn: Akdeniz, Ege, Mersin.." />
         </div>
       </div>
 
       <div class="bar">
-        <button class="btn secondary" id="sortAZ" title="Mağaza ismine göre A→Z">A → Z</button>
+        <button class="btn secondary active" id="sortAZ" title="Mağaza ismine göre A→Z">A → Z</button>
         <button class="btn secondary" id="sortZA" title="Mağaza ismine göre Z→A">Z → A</button>
         <div class="chip"><span>Sonuç:</span> <b id="count">0</b></div>
         <div class="grow"></div>
@@ -133,23 +134,26 @@
     const DEALERS = [
       {
         name: "İbrahim Halil Gıda San. ve Tic A.Ş",
-        city: "Akdeniz",
-        district: "Mersin",
+        city: "Mersin",
+        district: "Mezitli",
         address: "İsmet İnönü Bulvarı No:143/15 Mezitli/MERSİN",
-        phone: "+90 312 394 70 77",
-        tags: ["Akdeniz Bölge Müdürlüğü"]
+        phone: "+90 532 340 59 63",
+        tags: ["Akdeniz Bölge Müdürlüğü"],
+        lat: 36.797099, lng: 34.595722
       },{
         name: "Glokal Danışmanlık Eğitim Araştırma Ltd. Şti",
-        city: "Ege",
-        district: "İzmir",
-        address: "1578.Sokak No:13/6 Çankaya/ANKARA",
-        phone: "+90 532 295 44 84",
+        city: "Manisa",
+        district: "Merkez",
+        address: "Merkez/MANİSA",
+        phone: "+90 505 293 67 24",
         tags: ["Ege Bölge Müdürlüğü"]
       },
     ];
 
     const $ = (id) => document.getElementById(id);
-    const norm = (s) => (s || "").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const norm = (s) => (s || "").toString().trim().toLowerCase()
+      .replaceAll("ı","i")
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     function unique(arr){ return [...new Set(arr)].sort((a,b)=>a.localeCompare(b,"tr")); }
 
     const citySel = $("city"), districtSel = $("district"), qInp = $("q");
@@ -210,10 +214,16 @@
     citySel.addEventListener("change", ()=>{ fillDistricts(); apply(); });
     districtSel.addEventListener("change", apply);
     qInp.addEventListener("input", apply);
-    $("sortAZ").addEventListener("click", ()=>{ currentSort="AZ"; apply(); });
-    $("sortZA").addEventListener("click", ()=>{ currentSort="ZA"; apply(); });
+    function setSort(mode){
+      currentSort = mode;
+      $("sortAZ").classList.toggle("active", mode === "AZ");
+      $("sortZA").classList.toggle("active", mode === "ZA");
+      apply();
+    }
+    $("sortAZ").addEventListener("click", ()=> setSort("AZ"));
+    $("sortZA").addEventListener("click", ()=> setSort("ZA"));
     $("reset").addEventListener("click", ()=>{
-      citySel.value=""; fillDistricts(); districtSel.value=""; qInp.value=""; currentSort="AZ"; apply();
+      citySel.value=""; fillDistricts(); districtSel.value=""; qInp.value=""; setSort("AZ");
     });
 
     fillCities(); fillDistricts(); apply();
